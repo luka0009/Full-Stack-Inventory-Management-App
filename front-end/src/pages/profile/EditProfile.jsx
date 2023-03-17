@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Card from "../../components/card/Card";
-import Loader from "../../components/loader/Loader";
-import { selectUser } from "../../redux/features/auth/authSlice";
 import "./Profile.scss";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Card from "../../components/card/Card";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loader from "../../components/loader/Loader";
 import { updateUser } from "../../services/authService";
 import ChangePassword from "../../components/changePassword/ChangePassword";
 
-const EditProfile = () => {
+export default function EditProfile() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const user = useSelector(selectUser);
+  const user = useSelector((state) => state.auth.user);
   const { email } = user;
 
   useEffect(() => {
@@ -24,10 +23,10 @@ const EditProfile = () => {
   const initialState = {
     name: user?.name,
     email: user?.email,
-    phone: user?.phone,
     bio: user?.bio,
     photo: user?.photo,
   };
+
   const [profile, setProfile] = useState(initialState);
   const [profileImage, setProfileImage] = useState("");
 
@@ -43,8 +42,8 @@ const EditProfile = () => {
   const saveProfile = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      // Handle Image upload
       let imageURL;
       if (
         profileImage &&
@@ -54,38 +53,35 @@ const EditProfile = () => {
       ) {
         const image = new FormData();
         image.append("file", profileImage);
-        image.append("cloud_name", "zinotrust");
-        image.append("upload_preset", "wk66xdkq");
+        image.append("cloud_name", "dhodeugqc");
+        image.append("upload_preset", "ao17awzg");
 
-        // First save image to cloudinary
         const response = await fetch(
-          "https://api.cloudinary.com/v1_1/zinotrust/image/upload",
-          { method: "post", body: image }
+          "https://api.cloudinary.com/v1_1/dhodeugqc/image/upload",
+          {
+            method: "POST",
+            body: image,
+          }
         );
         const imgData = await response.json();
         imageURL = imgData.url.toString();
-
-        // Save Profile
-        const formData = {
-          name: profile.name,
-          phone: profile.phone,
-          bio: profile.bio,
-          photo: profileImage ? imageURL : profile.photo,
-        };
-
-        const data = await updateUser(formData);
-        console.log(data);
-        toast.success("User updated");
-        navigate("/profile");
-        setIsLoading(false);
       }
+      const formData = {
+        name: profile?.name,
+        bio: profile?.bio,
+        photo: profileImage ? imageURL : profile?.photo,
+      };
+      const data = await updateUser(formData);
+      console.log(data);
+      navigate("/profile");
+      setIsLoading(false);
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
       toast.error(error.message);
     }
   };
-
+  console.log(user?.name);
+  console.log(profile);
   return (
     <div className="profile --my2">
       {isLoading && <Loader />}
@@ -112,16 +108,8 @@ const EditProfile = () => {
               <code>Email cannot be changed.</code>
             </p>
             <p>
-              <label>Phone:</label>
-              <input
-                type="text"
-                name="phone"
-                value={profile?.phone}
-                onChange={handleInputChange}
-              />
-            </p>
-            <p>
               <label>Bio:</label>
+              <br />
               <textarea
                 name="bio"
                 value={profile?.bio}
@@ -144,6 +132,4 @@ const EditProfile = () => {
       <ChangePassword />
     </div>
   );
-};
-
-export default EditProfile;
+} 

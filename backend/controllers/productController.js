@@ -1,3 +1,4 @@
+const e = require("express");
 const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const { fileSizeFormatter } = require("../utils/fileUpload");
@@ -32,8 +33,8 @@ const createPoduct = asyncHandler(async (req, res) => {
       filePath: uploadedFile.secure_url,
       fileType: req.file.mimetype,
       fileSize: fileSizeFormatter(req.file.size, 2),
-    };
-  }
+    }
+  } 
 
   const product = await Product.create({
     user: req.user.id,

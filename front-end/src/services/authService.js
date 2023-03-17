@@ -114,7 +114,7 @@ export const getUser = async () => {
 export const updateUser = async (formData) => {
   try {
     const response = await axios.patch(
-      `${BACKEND_URL}/api/users/updateuser`,
+      `${BACKEND_URL}/api/users/updateinfo`,
       formData
     );
     return response.data;
@@ -130,7 +130,7 @@ export const updateUser = async (formData) => {
 export const changePassword = async (formData) => {
   try {
     const response = await axios.patch(
-      `${BACKEND_URL}/api/users/changepassword`,
+      `${BACKEND_URL}/api/users/updatepassword`,
       formData
     );
     return response.data;

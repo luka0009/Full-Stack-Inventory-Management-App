@@ -3,11 +3,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const userRoute = require('./routes/userRoute');
-const productRoute = require('./routes/productRoute');
-const errorHandler = require('./middleware/errorMiddleware');
-const cookieParser = require('cookie-parser');
-const path = require('path');
+const userRoute = require("./routes/userRoute");
+const productRoute = require("./routes/productRoute");
+const errorHandler = require("./middleware/errorMiddleware");
+const cookieParser = require("cookie-parser");
+const path = require("path");
 
 const app = express();
 
@@ -16,19 +16,26 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://127.0.0.1:5173",
+      "https://full-stack-inventory-management-app-luka0009.vercel.app/",
+    ],
+    credentials: true,
+  })
+);
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // routes middleware
-app.use('/api/users', userRoute)
-app.use('/api/products', productRoute);
+app.use("/api/users", userRoute);
+app.use("/api/products", productRoute);
 
 // routes
 app.get("/", (req, res) => {
-  res.send("Home Page");
+  res.send("Home(Main) Page");
 });
-
 
 // error middleware
 app.use(errorHandler);

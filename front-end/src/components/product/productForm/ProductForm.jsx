@@ -15,8 +15,13 @@ const ProductForm = ({
   handleImageChange,
   saveProduct,
   placeholder,
-  setImagePreview
+  setImagePreview,
+  formData
 }) => {
+  console.log(product?.product?.category);
+  console.log(product?.product?.name);
+  console.log(product?.product?.quantity);
+  console.log(product?.product?.price);
   return (
     <div className="add-product">
       <Card cardClass={"card"}>
@@ -35,9 +40,11 @@ const ProductForm = ({
               <div className="image-preview">
                 <img src={imagePreview} alt="product" />
               </div>
-            ) : (
-              <p>No image set for this poduct.</p>
-            )}
+            ) : null
+            // (
+            //   <p>No image set for this poduct.</p>
+            // )
+            }
           </Card>
           <label>Product Name:</label>
           <input

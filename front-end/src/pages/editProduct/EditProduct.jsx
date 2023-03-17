@@ -58,7 +58,7 @@ export default function EditProduct() {
     if (productImage) {
       formData.append("image", productImage);
     }
-
+    console.log(product?.category)
     console.log(...formData);
 
     await dispatch(UpdateProduct({ id, formData }));

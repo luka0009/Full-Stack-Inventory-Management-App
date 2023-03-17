@@ -26,11 +26,6 @@ const menu = [
       },
     ],
   },
-  {
-    title: "Contact Info",
-    icon: <FaCommentAlt />,
-    path: "/contact-us",
-  },
 ];
 
 export default menu;

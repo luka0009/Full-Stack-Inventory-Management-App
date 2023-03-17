@@ -47,7 +47,11 @@ export default function ProductDetail() {
               {product?.product?.image ? (
                 <img src={product?.product?.image?.filePath} alt={product?.product?.image?.fileName} />
               ) : (
-                <p>No Image is added for this product</p>
+                <p>No Image is added for this product or image is added in format that is not accepted
+                  <br />
+                  <br />
+                  accepted formats are: jpeg, jpg, png.
+                </p>
               )}
             </Card>
             <h4>Product Availability {stockStatus(product.quantity)}</h4>

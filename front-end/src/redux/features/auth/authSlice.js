@@ -25,15 +25,17 @@ export const authSlice = createSlice({
       state.name = action.payload;
     },
     SET_USER(state, action) {
-      const profile = action.payload;
-      state.user.name = profile.name;
-      state.user.email = profile.email;
-      state.user.bio = profile.bio;
-      state.user.photo = profile.photo;
+        const profile = action.payload;
+        state.user.name = profile.name;
+        state.user.email = profile.email;
+        state.user.phone = profile.phone;
+        state.user.bio = profile.bio;
+        state.user.photo = profile.photo;
     },
   },
 });
 
 export const {SET_LOGIN, SET_NAME,  SET_USER} = authSlice.actions;
+export const selectUser = (state) => state.auth.user;
 
 export default authSlice.reducer;
