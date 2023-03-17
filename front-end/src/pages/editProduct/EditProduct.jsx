@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../components/loader/Loader";
-import ProductForm from "../../components/product/productForm/ProductForm";
 import {
   getProduct,
   getProducts,
-  selectIsLoading,
-  selectProduct,
-  updateProduct,
+  UpdateProduct,
 } from "../../redux/features/product/productSlice";
+import ProductForm from "../../components/product/productForm/ProductForm";
+import Loader from "../../components/loader/Loader";
 
-const EditProduct = () => {
+export default function EditProduct() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoading = useSelector(selectIsLoading);
-
-  const productEdit = useSelector(selectProduct);
+  const isLoading = useSelector((state) => state.product.isLoading);
+  const productEdit = useSelector((state) => state.product.product);
 
   const [product, setProduct] = useState(productEdit);
   const [productImage, setProductImage] = useState("");
@@ -30,19 +27,19 @@ const EditProduct = () => {
 
   useEffect(() => {
     setProduct(productEdit);
-
     setImagePreview(
-      productEdit && productEdit.image ? `${productEdit.image.filePath}` : null
+      productEdit && productEdit?.image
+        ? productEdit?.product?.image?.filePath
+        : null
     );
-
     setDescription(
-      productEdit && productEdit.description ? productEdit.description : ""
+      productEdit && productEdit.product?.description ? productEdit?.product?.description : null
     );
   }, [productEdit]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
+    setProduct({ ...product, [name]: value || '' });
   };
 
   const handleImageChange = (e) => {
@@ -54,7 +51,6 @@ const EditProduct = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", product?.name);
-
     formData.append("category", product?.category);
     formData.append("quantity", product?.quantity);
     formData.append("price", product?.price);
@@ -65,8 +61,9 @@ const EditProduct = () => {
 
     console.log(...formData);
 
-    await dispatch(updateProduct({ id, formData }));
+    await dispatch(UpdateProduct({ id, formData }));
     await dispatch(getProducts());
+
     navigate("/dashboard");
   };
 
@@ -76,6 +73,7 @@ const EditProduct = () => {
       <h3 className="--mt">Edit Product</h3>
       <ProductForm
         product={product}
+        placeholder={product?.product}
         productImage={productImage}
         imagePreview={imagePreview}
         description={description}
@@ -83,9 +81,8 @@ const EditProduct = () => {
         handleInputChange={handleInputChange}
         handleImageChange={handleImageChange}
         saveProduct={saveProduct}
+        setImagePreview={setImagePreview}
       />
     </div>
   );
-};
-
-export default EditProduct;
+}

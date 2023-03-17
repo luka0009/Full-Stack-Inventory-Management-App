@@ -14,6 +14,8 @@ const ProductForm = ({
   handleInputChange,
   handleImageChange,
   saveProduct,
+  placeholder,
+  setImagePreview
 }) => {
   return (
     <div className="add-product">
@@ -29,7 +31,6 @@ const ProductForm = ({
               name="image"
               onChange={(e) => handleImageChange(e)}
             />
-
             {imagePreview != null ? (
               <div className="image-preview">
                 <img src={imagePreview} alt="product" />
@@ -41,43 +42,43 @@ const ProductForm = ({
           <label>Product Name:</label>
           <input
             type="text"
-            placeholder="Product name"
+            placeholder={placeholder?.name || 'product name'}
             name="name"
-            value={product?.name}
+            value={product?.name || placeholder?.name || ''}
             onChange={handleInputChange}
           />
 
           <label>Product Category:</label>
           <input
             type="text"
-            placeholder="Product Category"
+            placeholder={placeholder?.category || 'product category'}
             name="category"
-            value={product?.category}
+            value={product?.category || placeholder?.category || ''}
             onChange={handleInputChange}
           />
 
           <label>Product Price:</label>
           <input
             type="text"
-            placeholder="Product Price"
-            name="price"
-            value={product?.price}
+            placeholder={placeholder?.price || 'product price'}
+             name="price"
+            value={product?.price || placeholder?.price || ''}
             onChange={handleInputChange}
           />
 
           <label>Product Quantity:</label>
           <input
             type="text"
-            placeholder="Product Quantity"
+            placeholder={placeholder?.quantity || 'product quantity'}
             name="quantity"
-            value={product?.quantity}
+            value={product?.quantity || placeholder?.quantity || ''}
             onChange={handleInputChange}
           />
 
           <label>Product Description:</label>
           <ReactQuill
             theme="snow"
-            value={description}
+            value={description || ''}
             onChange={setDescription}
             modules={ProductForm.modules}
             formats={ProductForm.formats}

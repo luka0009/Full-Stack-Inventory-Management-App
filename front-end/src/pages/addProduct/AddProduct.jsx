@@ -3,10 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/loader/Loader";
 import ProductForm from "../../components/product/productForm/ProductForm";
-import {
-  createProduct,
-  selectIsLoading,
-} from "../../redux/features/product/productSlice";
+import {createProduct} from '../../redux/features/product/productSlice';
 
 const initialState = {
   name: "",
@@ -23,7 +20,7 @@ const AddProduct = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [description, setDescription] = useState("");
 
-  const isLoading = useSelector(selectIsLoading);
+  const isLoading = useSelector(state => state.product.isLoading);
 
   const { name, category, price, quantity } = product;
 
@@ -75,6 +72,7 @@ const AddProduct = () => {
         handleInputChange={handleInputChange}
         handleImageChange={handleImageChange}
         saveProduct={saveProduct}
+        setImagePreview={setImagePreview}
       />
     </div>
   );

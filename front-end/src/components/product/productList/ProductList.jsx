@@ -1,61 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { SpinnerImg } from "../../loader/Loader";
 import "./productList.scss";
+import { SpinnerImg } from "../../loader/Loader";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { AiOutlineEye } from "react-icons/ai";
 import Search from "../../search/Search";
-// import { useDispatch, useSelector } from "react-redux";
-// import {
-//   FILTER_PRODUCTS,
-//   selectFilteredPoducts,
-// } from "../../../redux/features/product/filterSlice";
-// import ReactPaginate from "react-paginate";
-// import { confirmAlert } from "react-confirm-alert";
-// import "react-confirm-alert/src/react-confirm-alert.css";
-// import {
-//   deleteProduct,
-//   getProducts,
-// } from "../../../redux/features/product/productSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { filterProducts } from "../../../redux/features/product/filterSlice";
+import ReactPaginate from "react-paginate";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import {
+  deleteProduct,
+  getProducts,
+} from "../../../redux/features/product/productSlice";
 import { Link } from "react-router-dom";
 
-const ProductList = ({ products, isLoading }) => {
+export default function ProductList({ products, isLoading }) {
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
+  const filteredProducts = useSelector(
+    (state) => state.filter.filteredProducts
+  );
 
   const shortenText = (text, n) => {
+    if (text.length > n) {
+      const newText = text.substring(0, n).concat("...");
+      return newText;
+    }
     return text;
   };
 
   const delProduct = async (id) => {
-    console.log(id);
+    await dispatch(deleteProduct(id));
+    await dispatch(getProducts());
   };
 
   const confirmDelete = (id) => {
-    console.log(id);
+    confirmAlert({
+      title: "Confirm to Delete",
+      // message: "Are you sure to delete a product.",
+      buttons: [
+        {
+          label: "Delete",
+          onClick: () => delProduct(id),
+        },
+        {
+          label: "Cancel",
+          // onClick: () => alert("Click No"),
+        },
+      ],
+    });
   };
 
-  //   Begin Pagination
-  const [currentItems, setCurrentItems] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
+  /// ------- pagination ------------------------------------------
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const endOffset = itemOffset + itemsPerPage;
-
-    setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, filteredProducts]);
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = filteredProducts?.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredProducts?.length / itemsPerPage);
 
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
+    const newOffset =
+      (event.selected * itemsPerPage) % filteredProducts?.length;
     setItemOffset(newOffset);
   };
-  //   End Pagination
+  /// -------------------------------------------------------------
 
   useEffect(() => {
-    dispatch(FILTER_PRODUCTS({ products, search }));
+    dispatch(filterProducts({ products, search }));
   }, [products, search, dispatch]);
-
   return (
     <div className="product-list">
       <hr />
@@ -73,57 +87,49 @@ const ProductList = ({ products, isLoading }) => {
         </div>
 
         {isLoading && <SpinnerImg />}
-
         <div className="table">
-          {!isLoading && products.length === 0 ? (
-            <p>-- No product found, please add a product...</p>
+          {!isLoading && products?.length === 0 ? (
+            <p>No products found. Please add your products first</p>
           ) : (
             <table>
               <thead>
                 <tr>
-                  <th>s/n</th>
+                  <th>&#x2116;</th>
                   <th>Name</th>
                   <th>Category</th>
                   <th>Price</th>
                   <th>Quantity</th>
-                  <th>Value</th>
-                  <th>Action</th>
+                  <th>Total</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-
               <tbody>
-                {currentItems.map((product, index) => {
+                {currentItems?.map((product, index) => {
                   const { _id, name, category, price, quantity } = product;
                   return (
                     <tr key={_id}>
                       <td>{index + 1}</td>
                       <td>{shortenText(name, 16)}</td>
                       <td>{category}</td>
-                      <td>
-                        {"$"}
-                        {price}
-                      </td>
+                      <td>{`$${price}`}</td>
                       <td>{quantity}</td>
-                      <td>
-                        {"$"}
-                        {price * quantity}
-                      </td>
+                      <td>{`$${price * quantity}`}</td>
                       <td className="icons">
                         <span>
-                          <Link to={`/product-detail/${_id}`}>
-                            <AiOutlineEye size={25} color={"purple"} />
+                          <Link to={`/product-details/${_id}`}>
+                            <AiOutlineEye size={25} color={"blue"} />
                           </Link>
                         </span>
                         <span>
-                          <Link to={`/edit-product/${_id}`}>
-                            <FaEdit size={20} color={"green"} />
+                          <Link to={`/update-product/${_id}`}>
+                          <FaEdit size={20} color={"green"} />
                           </Link>
                         </span>
                         <span>
                           <FaTrashAlt
-                            size={20}
-                            color={"red"}
                             onClick={() => confirmDelete(_id)}
+                            size={20}
+                            color={"#8B0000"}
                           />
                         </span>
                       </td>
@@ -134,10 +140,21 @@ const ProductList = ({ products, isLoading }) => {
             </table>
           )}
         </div>
-        
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="Next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={pageCount}
+          previousLabel="< Previous"
+          renderOnZeroPageCount={null}
+          containerClassName="pagination"
+          pageLinkClassName="page-num"
+          previousLinkClassName="page-num"
+          nextLinkClassName="page-num"
+          activeLinkClassName="activePage"
+        />
       </div>
     </div>
   );
-};
-
-export default ProductList;
+}

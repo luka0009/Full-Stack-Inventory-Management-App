@@ -1,6 +1,7 @@
 .home {
   background-color: #030b6b;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 
   & nav {
     padding-top: 1.5rem;
@@ -50,6 +51,7 @@
 }
 .hero-image {
   width: 50%;
+  margin-top: -30px;
 }
 @media screen and (max-width: 600px) {
   .hero {

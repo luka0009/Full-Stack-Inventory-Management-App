@@ -1,7 +1,8 @@
 import { RiProductHuntLine } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import "./Home.scss";
-import img from '../../assets/inv-img.png';
+import img from "../../assets/inv-img.png";
+import { ShowOnLogin, ShowOnLogout } from '../../components/protect/HiddenLink';
 
 export default function Home() {
   return (
@@ -11,27 +12,33 @@ export default function Home() {
           {" "}
           <RiProductHuntLine size={55} />{" "}
         </div>
-      
-      <ul className="home-links">
-        <li>
-          <Link to="/register">Register</Link>
-        </li>
-        <li>
-          <button className="--btn --btn-primary">
-            <Link to="/login">Login</Link>
-          </button>
-        </li>
-        <li>
-          <button className="--btn --btn-primary">
-            <Link to="/dashboard">Dashboard</Link>
-          </button>
-        </li>
-      </ul>
+
+        <ul className="home-links">
+          <ShowOnLogout>
+            <li>
+              <Link to="/register">Register</Link>
+            </li>
+          </ShowOnLogout>
+          <ShowOnLogout>
+            <li>
+              <button className="--btn --btn-primary">
+                <Link to="/login">Login</Link>
+              </button>
+            </li>
+          </ShowOnLogout>
+          <ShowOnLogin>
+            <li>
+              <button className="--btn --btn-primary">
+                <Link to="/dashboard">Dashboard</Link>
+              </button>
+            </li>
+          </ShowOnLogin>
+        </ul>
       </nav>
       <section className="container hero">
         <div className="hero-text">
-            <h2>Inventory & Stock Management</h2>
-            <p>
+          <h2>Inventory & Stock Management</h2>
+          <p>
             Inventory system to control and manage proucts in the warehouse in
             real timeand integrated to make it easier to develop your business.
           </p>
@@ -42,18 +49,18 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-image">
-            <img src={img} alt="Inventory" />
+          <img src={img} alt="Inventory" />
         </div>
       </section>
     </div>
   );
 }
 
-function NumberText({num, text}) {
-    return (
-        <div className="--mr">
-            <h3 className="--color-white">{num}</h3>
-            <p className="--color-white">{text}</p>
-        </div>
-    )
+function NumberText({ num, text }) {
+  return (
+    <div className="--mr">
+      <h3 className="--color-white">{num}</h3>
+      <p className="--color-white">{text}</p>
+    </div>
+  );
 }
